@@ -54,11 +54,7 @@ public class NodeServlet extends HttpServlet {
 
     protected RestController restController;
 
-    @Override
-    public void init() throws ServletException {
-        getServletContext().log("Initializing elasticsearch Node '" + getServletName() + "'");
-        ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
-
+    protected void loadSettings(ImmutableSettings.Builder settings) {
         InputStream resourceAsStream = getServletContext().getResourceAsStream("/WEB-INF/elasticsearch.json");
         if (resourceAsStream != null) {
             settings.loadFromStream("/WEB-INF/elasticsearch.json", resourceAsStream);
@@ -78,6 +74,13 @@ public class NodeServlet extends HttpServlet {
                 // ignore
             }
         }
+    }
+
+    @Override
+    public void init() throws ServletException {
+        getServletContext().log("Initializing elasticsearch Node '" + getServletName() + "'");
+        ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
+        loadSettings(settings);
 
         Enumeration<String> enumeration = getServletContext().getAttributeNames();
 
